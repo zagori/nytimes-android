@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">nytimes-android</string>
+    <string name="app_name">nytimes</string>
+
+
+    <string name="fragment_main_title">The New York times</string>
+    <string name="fragment_main_section_search">Search</string>
+    <string name="fragment_main_section_popular">Popular</string>
+    <string name="fragment_main_menu_search">Search Articles</string>
+    <string name="fragment_main_menu_viewed">Most Viewed</string>
+    <string name="fragment_main_menu_shared">Most Shared</string>
+    <string name="fragment_main_menu_emailed">Most emailed</string>
 </resources>
