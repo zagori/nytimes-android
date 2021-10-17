@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import io.github.zagori.nytimes.R
 import io.github.zagori.nytimes.databinding.FragmentMainBinding
+import io.github.zagori.nytimes.models.ListType
 
 class MainFragment : Fragment() {
 
@@ -33,24 +34,21 @@ class MainFragment : Fragment() {
 
         // Navigate to most viewed
         binding.itemMostViewed.setOnClickListener {
-            val bundle = bundleOf(ArticlesFragment.ARG_KEY_TITLE to
-                    getString(R.string.fragment_articles_title_viewed))
+            val bundle = bundleOf(ArticlesFragment.ARG_KEY_TYPE to ListType.Viewed.name)
 
             navController.navigate(R.id.view_most_viewed_action, bundle)
         }
 
         // Navigate to most shared
         binding.itemMostShared.setOnClickListener {
-            val bundle = bundleOf(ArticlesFragment.ARG_KEY_TITLE to
-                    getString(R.string.fragment_articles_title_shared))
+            val bundle = bundleOf(ArticlesFragment.ARG_KEY_TYPE to ListType.Shared.name)
 
             navController.navigate(R.id.view_most_shared_action, bundle)
         }
 
         // Navigate to most emailed
         binding.itemMostEmailed.setOnClickListener {
-            val bundle = bundleOf(ArticlesFragment.ARG_KEY_TITLE to
-                    getString(R.string.fragment_articles_title_emailed))
+            val bundle = bundleOf(ArticlesFragment.ARG_KEY_TYPE to ListType.Emailed.name)
 
             navController.navigate(R.id.view_most_emailed_action, bundle)
         }

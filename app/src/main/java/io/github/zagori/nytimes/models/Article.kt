@@ -11,5 +11,6 @@ data class Article(
     val byline: String,
     val title: String,
     @SerializedName("published_date") val publishedDate: String,
-    @SerializedName("abstract") val subtitle: String
+    @SerializedName("abstract") val subtitle: String,
+    var popularAs: String
 )

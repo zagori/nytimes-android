@@ -15,6 +15,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        viewModel.getRemoteMostViewed()
+        viewModel.preLoadMostPopular()
     }
 }
