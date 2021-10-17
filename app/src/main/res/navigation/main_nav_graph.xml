@@ -8,6 +8,25 @@
     <fragment android:id="@+id/main_fragment"
         android:name="io.github.zagori.nytimes.ui.fragments.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main"/>
+        tools:layout="@layout/fragment_main">
+
+        <action
+            android:id="@+id/view_most_viewed_action"
+            app:destination="@id/articles_fragment"/>
+
+        <action
+            android:id="@+id/view_most_shared_action"
+            app:destination="@id/articles_fragment"/>
+
+        <action
+            android:id="@+id/view_most_emailed_action"
+            app:destination="@id/articles_fragment"/>
+
+    </fragment>
+
+    <fragment android:id="@+id/articles_fragment"
+        android:name="io.github.zagori.nytimes.ui.fragments.ArticlesFragment"
+        android:label="fragment_articles"
+        tools:layout="@layout/fragment_articles"/>
 
 </navigation>
