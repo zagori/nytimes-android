@@ -3,9 +3,7 @@ package io.github.zagori.nytimes.di.components
 import android.app.Application
 import dagger.BindsInstance
 import dagger.Component
-import io.github.zagori.nytimes.di.modules.EndpointModule
-import io.github.zagori.nytimes.di.modules.RepositoryModule
-import io.github.zagori.nytimes.di.modules.RetrofitModule
+import io.github.zagori.nytimes.di.modules.*
 import io.github.zagori.nytimes.repositories.ArticlesRepository
 import javax.inject.Singleton
 
@@ -13,7 +11,10 @@ import javax.inject.Singleton
     modules = [
         RetrofitModule::class,
         EndpointModule::class,
-        RepositoryModule::class
+        RepositoryModule::class,
+        ContextModule::class,
+        DatabaseModule::class,
+        DaoModule::class
     ]
 )
 @Singleton
