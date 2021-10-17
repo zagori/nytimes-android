@@ -17,6 +17,6 @@ abstract class ArticlesDao {
     @Query("DELETE FROM popular_table")
     abstract fun clearAllPopular(): Completable
 
-    @Query("SELECT * FROM popular_table")
-    abstract fun getPopularArticles(): Flowable<List<Article>>
+    @Query("SELECT * FROM popular_table WHERE popularAs == :type")
+    abstract fun getPopularArticles(type: String?): Flowable<List<Article>>
 }

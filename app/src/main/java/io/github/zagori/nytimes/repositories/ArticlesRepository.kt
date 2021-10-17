@@ -35,7 +35,8 @@ class ArticlesRepository(
     /**
      * Get a flow of most viewed articles from the local db
      **/
-    fun getLocalMostViewed(): Flowable<State<List<Article>>> = articlesDao.getPopularArticles()
+    fun getLocalMostViewed(listType: String?): Flowable<State<List<Article>>> = articlesDao
+        .getPopularArticles(listType)
         .flatMap {
             return@flatMap Flowable.just(State.Success(it))
         }

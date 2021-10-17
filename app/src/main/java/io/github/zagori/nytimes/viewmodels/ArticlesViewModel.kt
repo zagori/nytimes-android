@@ -41,8 +41,8 @@ class ArticlesViewModel : ViewModel() {
             })
     )
 
-    fun getLocalMostViewed() = compositeDisposable.add(
-        articlesRepository.getLocalMostViewed()
+    fun getLocalMostViewed(type: String?) = compositeDisposable.add(
+        articlesRepository.getLocalMostViewed(type)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { articlesLiveData.postValue(State.Loading) }
