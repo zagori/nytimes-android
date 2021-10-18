@@ -2,6 +2,7 @@ package io.github.zagori.nytimes.repositories
 
 import io.github.zagori.nytimes.BuildConfig
 import io.github.zagori.nytimes.models.Article
+import io.github.zagori.nytimes.models.Doc
 import io.github.zagori.nytimes.models.State
 import io.github.zagori.nytimes.source.local.daos.ArticlesDao
 import io.github.zagori.nytimes.source.remote.Endpoints
@@ -37,6 +38,36 @@ class ArticlesRepository(
      **/
     fun getLocalMostViewed(listType: String?): Flowable<State<List<Article>>> = articlesDao
         .getPopularArticles(listType)
+        .flatMap {
+            return@flatMap Flowable.just(State.Success(it))
+        }
+
+    /**
+     * This will load the list of articles using keyworks entered by user,
+     * and then save them to the local db
+     **/
+    fun loadAndSaveBySearch(query: String, page: Int): Completable = endpoints
+        .searchArticles(query, page, BuildConfig.API_KEY)
+        .flatMapCompletable { apiResponse ->
+
+            when(apiResponse.status){
+                "OK" -> {
+                    // if page 1 is returned, then clear cache and push fresh data to the database
+                    if (page == 1) articlesDao.clearSearchedArticles()
+                        .andThen(articlesDao.insertSearchedArticles(apiResponse.response.docs))
+
+                    // if page is not the first, then append the page data to the database
+                    else articlesDao.insertSearchedArticles(apiResponse.response.docs)
+                }
+                else -> throw Throwable("No articles have been found. Try again later")
+            }
+        }
+
+    /**
+     * Get a flow of searched articles from the local db
+     **/
+    fun getLocalSearched(): Flowable<State<List<Doc>>> = articlesDao
+        .getSearchedArticles()
         .flatMap {
             return@flatMap Flowable.just(State.Success(it))
         }

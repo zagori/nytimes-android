@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import io.github.zagori.nytimes.R
 import io.github.zagori.nytimes.databinding.FragmentArticlesBinding
@@ -38,17 +39,22 @@ class ArticlesFragment : Fragment() {
             ListType.Viewed.name -> {
                 binding.toolbar.title = getString(R.string.fragment_articles_title_viewed)
                 setupPopularObserver()
-                viewModel.getLocalMostViewed(listType)
+                viewModel.getLocalMostPopular(listType)
             }
             ListType.Shared.name -> {
                 binding.toolbar.title = getString(R.string.fragment_articles_title_shared)
                 setupPopularObserver()
-                viewModel.getLocalMostViewed(listType)
+                viewModel.getLocalMostPopular(listType)
             }
             ListType.Emailed.name -> {
                 binding.toolbar.title = getString(R.string.fragment_articles_title_emailed)
                 setupPopularObserver()
-                viewModel.getLocalMostViewed(listType)
+                viewModel.getLocalMostPopular(listType)
+            }
+            ListType.Search.name -> {
+                binding.toolbar.title = getString(R.string.fragment_articles_title_search, viewModel.query)
+                setupSearchObserver()
+                viewModel.getLocalSearch()
             }
         }
 
@@ -58,14 +64,24 @@ class ArticlesFragment : Fragment() {
     private fun setupPopularObserver() = viewModel.articlesLiveData
         .observe(viewLifecycleOwner) { state ->
             when (state) {
-                is State.Loading -> {
-                    Log.d(this::class.java.name, "+++> Popular: Loading...")
-                }
+                is State.Loading -> Log.d(this::class.java.name, "+++> Popular: Loading...")
+
                 is State.Success -> articlesAdapter.articles = state.data
 
-                is State.Error -> {
-                    Log.e(this::class.java.name, "+++> Popular: Error - ${state.getMessage()}")
-                }
+                is State.Error ->
+                    Toast.makeText(requireActivity(), state.getMessage(), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    private fun setupSearchObserver() = viewModel.docsLiveData
+        .observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is State.Loading -> Log.d(this::class.java.name, "+++> Doc: Loading...")
+
+                is State.Success -> articlesAdapter.docs = state.data
+
+                is State.Error ->
+                    Toast.makeText(requireActivity(), state.getMessage(), Toast.LENGTH_SHORT).show()
             }
         }
 

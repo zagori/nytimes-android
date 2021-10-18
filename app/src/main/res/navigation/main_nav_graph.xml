@@ -11,6 +11,10 @@
         tools:layout="@layout/fragment_main">
 
         <action
+            android:id="@+id/go_to_search_action"
+            app:destination="@id/search_fragment"/>
+
+        <action
             android:id="@+id/view_most_viewed_action"
             app:destination="@id/articles_fragment"/>
 
@@ -20,6 +24,17 @@
 
         <action
             android:id="@+id/view_most_emailed_action"
+            app:destination="@id/articles_fragment"/>
+
+    </fragment>
+
+    <fragment android:id="@+id/search_fragment"
+        android:name="io.github.zagori.nytimes.ui.fragments.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search">
+
+        <action
+            android:id="@+id/view_searched_action"
             app:destination="@id/articles_fragment"/>
 
     </fragment>

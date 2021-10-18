@@ -22,6 +22,11 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, it.getMessage(), Toast.LENGTH_LONG).show()
         }
 
+        viewModel.docsRefreshedLiveData.observe(this) {
+            if (it is State.Error)
+                Toast.makeText(this, it.getMessage(), Toast.LENGTH_LONG).show()
+        }
+
         viewModel.preLoadMostPopular()
     }
 }

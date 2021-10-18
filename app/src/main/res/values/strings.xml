@@ -12,4 +12,8 @@
     <string name="fragment_articles_title_viewed">Most Viewed Articles</string>
     <string name="fragment_articles_title_shared">Most Shared Articles</string>
     <string name="fragment_articles_title_emailed">Most emailed Articles</string>
+    <string name="fragment_articles_title_search">Search: %s</string>
+
+    <string name="fragment_search_title">Search</string>
+    <string name="fragment_search_hint">Search articles here…</string>
 </resources>

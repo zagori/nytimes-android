@@ -15,10 +15,7 @@ class MainFragment : Fragment() {
 
     private lateinit var binding: FragmentMainBinding
     private val navController by lazy {
-        Navigation.findNavController(
-            requireActivity(),
-            R.id.nav_host_fragment
-        )
+        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment)
     }
 
     override fun onCreateView(
@@ -55,7 +52,7 @@ class MainFragment : Fragment() {
 
         // Navigate to search fragment
         binding.itemSearch.setOnClickListener {
-
+            navController.navigate(R.id.go_to_search_action)
         }
     }
 }

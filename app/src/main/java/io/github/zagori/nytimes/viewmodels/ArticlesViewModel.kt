@@ -3,6 +3,7 @@ package io.github.zagori.nytimes.viewmodels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.github.zagori.nytimes.models.Article
+import io.github.zagori.nytimes.models.Doc
 import io.github.zagori.nytimes.models.ListType
 import io.github.zagori.nytimes.models.State
 import io.github.zagori.nytimes.repositories.ArticlesRepository
@@ -23,6 +24,12 @@ class ArticlesViewModel : ViewModel() {
     val articlesLiveData by lazy { MutableLiveData<State<List<Article>>>() }
     val articlesRefreshedLiveData by lazy { MutableLiveData<State<Boolean>>() }
 
+    val docsLiveData by lazy { MutableLiveData<State<List<Doc>>>() }
+    val docsRefreshedLiveData by lazy { MutableLiveData<State<Boolean>>() }
+
+    var page = 1
+    var query = ""
+
     init {
         viewModelInjection.inject(this)
     }
@@ -41,7 +48,7 @@ class ArticlesViewModel : ViewModel() {
             })
     )
 
-    fun getLocalMostViewed(type: String?) = compositeDisposable.add(
+    fun getLocalMostPopular(type: String?) = compositeDisposable.add(
         articlesRepository.getLocalMostViewed(type)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -57,8 +64,37 @@ class ArticlesViewModel : ViewModel() {
      * This is meant to preload and save articles list
      * */
     fun preLoadMostPopular() = ListType.values().forEach {
-        loadAndSaveMostPopular(it.name)
+        if (it != ListType.Search) loadAndSaveMostPopular(it.name)
     }
+
+    /**
+     * This is meant to load and save searched articles
+     * */
+    fun loadAndSaveSearched(query: String, page: Int) = compositeDisposable.add(
+        articlesRepository.loadAndSaveBySearch(query, page)
+            .doOnSubscribe { docsRefreshedLiveData.postValue(State.Loading) }
+            .subscribe({
+                docsRefreshedLiveData.postValue(State.Success(true))
+            }, {
+                docsRefreshedLiveData.postValue(State.Error(it))
+            })
+    )
+
+    /**
+     * Subscribe to the emissions of the searched articles from the local database.
+     * This subscription will update the ui every time data changed in the database
+     * */
+    fun getLocalSearch() = compositeDisposable.add(
+        articlesRepository.getLocalSearched()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { docsLiveData.postValue(State.Loading) }
+            .subscribe({
+                docsLiveData.postValue(it)
+            }, {
+                docsLiveData.postValue(State.Error(it))
+            })
+    )
 
     override fun onCleared() {
         if (!compositeDisposable.isDisposed) compositeDisposable.dispose()
