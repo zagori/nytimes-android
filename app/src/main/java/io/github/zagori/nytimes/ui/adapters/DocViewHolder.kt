@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.load
 import io.github.zagori.nytimes.databinding.ItemArticleBinding
 import io.github.zagori.nytimes.models.Doc
+import io.github.zagori.nytimes.utils.Constants
 
 class DocViewHolder(
     private val binding: ItemArticleBinding
@@ -17,6 +18,6 @@ class DocViewHolder(
         binding.txtPublishedDate.text = doc.pubDate
 
         // set the image
-        doc.multimedia.firstOrNull()?.imageUrl?.let { binding.image.load(it) }
+        doc.multimedia.firstOrNull()?.imageUrl?.let { binding.image.load(Constants.WEBSITE_BASE_URL + it) }
     }
 }
