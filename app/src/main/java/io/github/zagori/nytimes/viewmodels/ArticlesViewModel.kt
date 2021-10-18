@@ -38,7 +38,7 @@ class ArticlesViewModel : ViewModel() {
      * This is meant to load and save articles list based on the type passed,
      * either most viewed, shared or emailed, and then it will notify the livedata
      * */
-    private fun loadAndSaveMostPopular(listType: String) = compositeDisposable.add(
+    fun loadAndSaveMostPopular(listType: String) = compositeDisposable.add(
         articlesRepository.loadAndSaveMostPopular(listType)
             .doOnSubscribe { articlesRefreshedLiveData.postValue(State.Loading) }
             .subscribe({

@@ -3,7 +3,7 @@ package io.github.zagori.nytimes.models
 import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "popular_table", primaryKeys = ["id"])
+@Entity(tableName = "popular_table", primaryKeys = ["id","popularAs"])
 data class Article(
     val id: Long,
     val url: String,

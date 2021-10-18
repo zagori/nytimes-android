@@ -21,7 +21,7 @@ class ArticlesFragment : Fragment() {
     private lateinit var binding: FragmentArticlesBinding
     private val viewModel: ArticlesViewModel by activityViewModels()
     private val articlesAdapter by lazy { ArticlesAdapter() }
-    private val listType by lazy { arguments?.getString(ARG_KEY_TYPE) }
+    private val listType by lazy { arguments?.getString(ARG_KEY_TYPE)?: ListType.Viewed.name }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,16 +40,19 @@ class ArticlesFragment : Fragment() {
             ListType.Viewed.name -> {
                 binding.toolbar.title = getString(R.string.fragment_articles_title_viewed)
                 setupPopularObserver()
+                viewModel.loadAndSaveMostPopular(listType)
                 viewModel.getLocalMostPopular(listType)
             }
             ListType.Shared.name -> {
                 binding.toolbar.title = getString(R.string.fragment_articles_title_shared)
                 setupPopularObserver()
+                viewModel.loadAndSaveMostPopular(listType)
                 viewModel.getLocalMostPopular(listType)
             }
             ListType.Emailed.name -> {
                 binding.toolbar.title = getString(R.string.fragment_articles_title_emailed)
                 setupPopularObserver()
+                viewModel.loadAndSaveMostPopular(listType)
                 viewModel.getLocalMostPopular(listType)
             }
             ListType.Search.name -> {
