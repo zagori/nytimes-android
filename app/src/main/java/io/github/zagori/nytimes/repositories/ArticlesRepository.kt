@@ -1,6 +1,5 @@
 package io.github.zagori.nytimes.repositories
 
-import io.github.zagori.nytimes.BuildConfig
 import io.github.zagori.nytimes.models.Article
 import io.github.zagori.nytimes.models.Doc
 import io.github.zagori.nytimes.models.State
@@ -18,16 +17,17 @@ class ArticlesRepository(
      * This will load the list of most viewed articles and save them to the local db
      **/
     fun loadAndSaveMostPopular(listType: String): Completable = endpoints
-        .loadMostPopular(listType.lowercase(), PERIOD, BuildConfig.API_KEY)
+        .loadMostPopular(listType.lowercase(), PERIOD)
         .flatMapCompletable { apiResponse ->
 
             when(apiResponse.status){
                 "OK" -> {
                     // inject list type for each item
-                    apiResponse.results.forEach { article -> article.popularAs = listType }
+                    apiResponse.results?.forEach { article -> article.popularAs = listType }
 
                     // then insert the result to the popular table
-                    articlesDao.insertPopularArticles(apiResponse.results)
+                    apiResponse.results?.let { articlesDao.insertPopularArticles(it) }
+                        ?: throw Throwable("No articles have been found. Try again later")
                 }
                 else -> throw Throwable("No articles have been found. Try again later")
             }
@@ -47,11 +47,13 @@ class ArticlesRepository(
      * and then save them to the local db
      **/
     fun loadAndSaveBySearch(query: String, page: Int): Completable = endpoints
-        .searchArticles(query, page, BuildConfig.API_KEY)
+        .searchArticles(query, page)
         .flatMapCompletable { apiResponse ->
 
             when(apiResponse.status){
                 "OK" -> {
+                    if (apiResponse.response == null) throw Throwable("No articles have been found. Try again later")
+
                     // if page 1 is returned, then clear cache and push fresh data to the database
                     if (page == 1) articlesDao.clearSearchedArticles()
                         .andThen(articlesDao.insertSearchedArticles(apiResponse.response.docs))
