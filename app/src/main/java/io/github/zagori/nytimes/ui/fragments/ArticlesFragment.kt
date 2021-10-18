@@ -1,13 +1,13 @@
 package io.github.zagori.nytimes.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.snackbar.Snackbar
 import io.github.zagori.nytimes.R
 import io.github.zagori.nytimes.databinding.FragmentArticlesBinding
 import io.github.zagori.nytimes.models.ListType
@@ -52,7 +52,8 @@ class ArticlesFragment : Fragment() {
                 viewModel.getLocalMostPopular(listType)
             }
             ListType.Search.name -> {
-                binding.toolbar.title = getString(R.string.fragment_articles_title_search, viewModel.query)
+                binding.toolbar.title =
+                    getString(R.string.fragment_articles_title_search, viewModel.query)
                 setupSearchObserver()
                 viewModel.getLocalSearch()
             }
@@ -61,29 +62,49 @@ class ArticlesFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupPopularObserver() = viewModel.articlesLiveData
-        .observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is State.Loading -> Log.d(this::class.java.name, "+++> Popular: Loading...")
+    private fun setupPopularObserver() {
+        viewModel.articlesLiveData
+            .observe(viewLifecycleOwner) { state ->
+                if (state is State.Success) articlesAdapter.articles = state.data
+            }
 
-                is State.Success -> articlesAdapter.articles = state.data
-
-                is State.Error ->
-                    Toast.makeText(requireActivity(), state.getMessage(), Toast.LENGTH_SHORT).show()
+        viewModel.articlesRefreshedLiveData.observe(viewLifecycleOwner) { state ->
+            when(state){
+                is State.Loading -> showLoadingIndicator(true)
+                is State.Success -> showLoadingIndicator(false)
+                is State.Error -> {
+                    showError(state.getMessage())
+                    showLoadingIndicator(false)
+                }
             }
         }
+    }
 
-    private fun setupSearchObserver() = viewModel.docsLiveData
-        .observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is State.Loading -> Log.d(this::class.java.name, "+++> Doc: Loading...")
+    private fun setupSearchObserver() {
+        viewModel.docsLiveData
+            .observe(viewLifecycleOwner) { state ->
+                if (state is State.Success) articlesAdapter.docs = state.data
+            }
 
-                is State.Success -> articlesAdapter.docs = state.data
-
-                is State.Error ->
-                    Toast.makeText(requireActivity(), state.getMessage(), Toast.LENGTH_SHORT).show()
+        viewModel.docsRefreshedLiveData.observe(viewLifecycleOwner) { state ->
+            when(state){
+                is State.Loading -> showLoadingIndicator(true)
+                is State.Success -> showLoadingIndicator(false)
+                is State.Error -> {
+                    showError(state.getMessage())
+                    showLoadingIndicator(false)
+                }
             }
         }
+    }
+
+    private fun showLoadingIndicator(show: Boolean) {
+        binding.progressIndicator.isVisible = show
+    }
+
+    private fun showError(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+    }
 
     companion object {
         const val ARG_KEY_TYPE = "article_list_type"
