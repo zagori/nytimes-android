@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import io.github.zagori.nytimes.R
 import io.github.zagori.nytimes.databinding.FragmentArticlesBinding
@@ -55,6 +56,7 @@ class ArticlesFragment : Fragment() {
                 binding.toolbar.title =
                     getString(R.string.fragment_articles_title_search, viewModel.query)
                 setupSearchObserver()
+                addScrollListener()
                 viewModel.getLocalSearch()
             }
         }
@@ -97,6 +99,23 @@ class ArticlesFragment : Fragment() {
             }
         }
     }
+
+    /**
+     * Add scroll Listener to detect when recycler-view reaches bottom.
+     * This listener to be set up only for Search listType
+     */
+    private fun addScrollListener() =
+        binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                // Trigger load more when recycler reaches bottom. direction 1 refers to scrolling down
+                if (!binding.recyclerView.canScrollVertically(1)
+                    && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    viewModel.loadAndSaveSearched(viewModel.query)
+                }
+            }
+        })
 
     private fun showLoadingIndicator(show: Boolean) {
         binding.progressIndicator.isVisible = show

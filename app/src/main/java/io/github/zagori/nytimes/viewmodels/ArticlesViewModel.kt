@@ -70,11 +70,12 @@ class ArticlesViewModel : ViewModel() {
     /**
      * This is meant to load and save searched articles
      * */
-    fun loadAndSaveSearched(query: String, page: Int) = compositeDisposable.add(
+    fun loadAndSaveSearched(query: String) = compositeDisposable.add(
         articlesRepository.loadAndSaveBySearch(query, page)
             .doOnSubscribe { docsRefreshedLiveData.postValue(State.Loading) }
             .subscribe({
                 docsRefreshedLiveData.postValue(State.Success(true))
+                page++
             }, {
                 docsRefreshedLiveData.postValue(State.Error(it))
             })

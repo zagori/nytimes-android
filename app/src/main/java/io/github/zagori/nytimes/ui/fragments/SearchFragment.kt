@@ -37,8 +37,11 @@ class SearchFragment : Fragment() {
         binding.searchBtn.setOnClickListener {
             viewModel.query = binding.searchInput.text.toString()
 
+            // reset page to 1
+            viewModel.page = 1
+
             // trigger the network call
-            viewModel.loadAndSaveSearched(viewModel.query, 1)
+            viewModel.loadAndSaveSearched(viewModel.query)
 
             // then redirect to view article list
             val bundle = bundleOf(ArticlesFragment.ARG_KEY_TYPE to ListType.Search.name)
