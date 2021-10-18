@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">nytimes</string>
 
-    <string name="fragment_main_title">The New York times</string>
+    <string name="fragment_main_title">The New York Times</string>
     <string name="fragment_main_section_search">Search</string>
     <string name="fragment_main_section_popular">Popular</string>
     <string name="fragment_main_menu_search">Search Articles</string>
