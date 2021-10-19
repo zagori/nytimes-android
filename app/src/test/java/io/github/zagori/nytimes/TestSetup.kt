@@ -33,7 +33,7 @@ open class TestSetup {
 
     fun onSearchArticles_fromApi_success() {
         Mockito.`when`(
-            endpoints.searchArticles("query", 1, API_KEY)
+            endpoints.searchArticles("query", 1)
         ).thenReturn(
             Single.just(ApiResponse("OK","copyright",2,null,
                 DocResponse(docs = getListOfDocs(1, 2)),null))
@@ -42,7 +42,7 @@ open class TestSetup {
 
     fun onSearchArticles_fromApi_serverError() {
         Mockito.`when`(
-            endpoints.searchArticles("query", 1, API_KEY)
+            endpoints.searchArticles("query", 1)
         ).thenReturn(
             Single.just(ApiResponse("Error","copyright",2,null,
                 null, listOf("page: must be less than or equal to 200")))
@@ -50,7 +50,7 @@ open class TestSetup {
     }
 
     fun onSearchArticles_fromApi_exception() {
-        Mockito.`when`(endpoints.searchArticles("query", 1, API_KEY))
+        Mockito.`when`(endpoints.searchArticles("query", 1))
             .thenThrow(MockitoException("Something went wrong"))
     }
 
